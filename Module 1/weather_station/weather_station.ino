@@ -103,7 +103,7 @@ void setup() {
 
 void loop() { 
     // --- Read Sensor Values ---
-    float temperature = bme.readTemperature();      // Get temperature in Celsius
+    float temperature = bme.readTemperature() * 1.8 + 32;      // Get temperature in Fahrenheit
     float humidity = bme.readHumidity();            // Get humidity in %
     float pressure = bme.readPressure() / 100.0F;   // Get pressure in hPa
     float altitude = bme.readAltitude(SEALEVELPRESSURE_HPA); // Get altitude in meters
@@ -111,7 +111,7 @@ void loop() {
     // --- Print All Values to Serial Monitor for debugging ---
     Serial.print(F("Temperature = "));
     Serial.print(temperature);
-    Serial.println(F(" °C"));
+    Serial.println(F(" °F"));
 
     Serial.print(F("Pressure = "));
     Serial.print(pressure);
