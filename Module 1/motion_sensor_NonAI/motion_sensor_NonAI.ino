@@ -30,8 +30,8 @@ Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 Adafruit_MPU6050 mpu;
 
 // Define a threshold for motion detection based on acceleration magnitude
-const float STILL_THRESHOLD_LOW = 9.0;
-const float STILL_THRESHOLD_HIGH = 10.5;
+const float STILL_THRESHOLD_LOW = 8.0;
+const float STILL_THRESHOLD_HIGH = 9.0;
 
 const int DEBOUNCE_COUNT_MOVING = 5; // How many consecutive 'moving' readings to confirm motion
 const int DEBOUNCE_COUNT_STILL = 10; // How many consecutive 'still' readings to confirm stillness
@@ -80,11 +80,14 @@ void setup(void) {
   delay(1000);
 
   // Initial display when still
-  tft.fillScreen(BLACK);          // Clear the screen
-  tft.setTextSize(2);             // Set text size to 2
-  tft.setTextColor(WHITE);        // Set text color
-  tft.setCursor(5, 5);            // Position text
-  tft.print("Still");             // Print "Still"
+  tft.fillScreen(BLACK); 
+  tft.setTextSize(4);    
+  tft.setTextColor(GREEN); 
+  tft.setCursor(5, 20);   
+  tft.println("Shake me");
+  tft.setCursor(5, 60);
+  tft.print("to see magic!");  
+  Serial.println("\n--- Still ---");   // Print "Still"
   Serial.println("Initial state: Still"); // Print initial state to Serial
 }
 
@@ -126,17 +129,21 @@ void loop() {
   // Update LED
   if (currentStateMoving && !wasMoving) { // Transition from Still to Moving
     tft.fillScreen(BLACK); 
-    tft.setTextSize(2);    
+    tft.setTextSize(4);    
     tft.setTextColor(RED); 
-    tft.setCursor(5, 5);   
-    tft.print("Moving");   
+    tft.setCursor(5, 20);   
+    tft.println("Weeee!");
+    tft.setCursor(5, 60);
+    tft.print("On the Go!");   
     wasMoving = true;
   } else if (!currentStateMoving && wasMoving) { // Transition from Moving to Still
     tft.fillScreen(BLACK); 
-    tft.setTextSize(2);    
+    tft.setTextSize(4);    
     tft.setTextColor(GREEN); 
-    tft.setCursor(5, 5);   
-    tft.print("Still");   
+    tft.setCursor(5, 20);   
+    tft.println("Shake me");
+    tft.setCursor(5, 60);
+    tft.print("to see magic!");  
     Serial.println("\n--- Still ---");
     wasMoving = false;
   }
