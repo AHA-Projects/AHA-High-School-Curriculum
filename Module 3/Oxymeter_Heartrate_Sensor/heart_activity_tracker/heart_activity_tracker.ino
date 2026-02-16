@@ -3,16 +3,17 @@
 // This material is based upon work supported by the National Science Foundation under Grant No. 2405373.
 // Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation.
 
-// --- Include Libraries ---
-#include <Wire.h> // Required for communication (MAX30105)
-#include "MAX30105.h" // SparkFun MAX30105 sensor library
-#include "heartRate.h" // SparkFun Heart Rate algorithm
+//Default Installed Libraries - No Installation Required
+#include <Wire.h> // - Required for communication 
+#include <SPI.h> // - Required for SPI communication for the screen
+
+// Sensor Specific Libraries - Installation Required from IDE library manager
+#include "MAX30105.h" //- SparkFun MAX30105 sensor library
+#include "heartRate.h" //- SparkFun Heart Rate algorithm
+#include <Adafruit_GFX.h>  // - Core graphics library
+#include <Adafruit_ST7789.h>  //- Library for our ST7789 screen
 
 
-// --- Adafruit Display Libraries ---
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
-#include <SPI.h>             // Required for SPI communication for the OLED(ST7789)
 
 // --- Display Pin Definitions ---
 #define TFT_CS   33  // Chip Select control pin
