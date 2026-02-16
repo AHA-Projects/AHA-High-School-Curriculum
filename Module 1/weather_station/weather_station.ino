@@ -10,7 +10,6 @@
 // --- Original Libraries for BME280 Sensor ---
 #include <Wire.h>             // Needed for I2C communication (how the sensor talks to Arduino)
 #include <SPI.h>              // Needed if you were using SPI communication (another way to talk)
-#include <Adafruit_Sensor.h>  // Adafruit's basic sensor library
 #include <Adafruit_BME280.h>  // The specific library for our BME280 sensor
 
 // --- Libraries for the TFT Display ---
