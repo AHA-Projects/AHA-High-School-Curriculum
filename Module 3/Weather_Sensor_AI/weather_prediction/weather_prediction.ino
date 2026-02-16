@@ -5,13 +5,20 @@
 // This material is based upon work supported by the National Science Foundation under Grant No. 2405373. 
 // Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation.
 
+
+// Edge Impulse Library : Need to import this as a ZIP after downloading from Edge Impulse/Github
 #include <weather_conditions_inferencing.h>
-#include <Adafruit_Sensor.h>                  // Unified sensor interface used by Adafruit libraries
-#include <Wire.h>                             // Library for I2C communication
-#include <WiFi.h>                             // WiFi library for network capability (not used in this code)
-#include <Adafruit_BME280.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7789.h> 
+
+
+
+// Default Installed Libraries - No Installation Required
+#include <Wire.h>  // - Required for communication 
+#include <SPI.h> // - Required for SPI communication for the screen
+
+// Sensor Specific Libraries - Installation Required from IDE library manager
+#include <Adafruit_BME280.h> // - The specific library for our BME280 sensor
+#include <Adafruit_GFX.h> // - Core graphics library - helps draw shapes and text
+#include <Adafruit_ST7789.h> // -  Library for our ST7789 TFT screen
 
 
 #define SEALEVELPRESSURE_HPA (1013.25)

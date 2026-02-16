@@ -7,14 +7,17 @@
 
 
 
-// --- Libraries for Sensor and I2C Communication ---
+// --- Default Installed Libraries - No Installation Required ---
 #include <Wire.h>     // For I2C communication (how the sensor talks to Arduino)
-#include <VL53L0X.h>  // For the VL53L0X Time-of-Flight distance sensor
+#include <SPI.h>              // Required for ST7789 even if using I2C sensor
 
-// --- Libraries for Adafruit ST7789 TFT Display ---
+
+// ---  Sensor Specific Libraries - Installation Required from IDE library manager --- 
+#include <VL53L0X.h>  // For the VL53L0X Time-of-Flight distance sensor
 #include <Adafruit_GFX.h>     // Core graphics library for drawing
 #include <Adafruit_ST7789.h>  // Specific library for ST7789 TFT displays
-#include <SPI.h>              // Required for ST7789 even if using I2C sensor
+
+
 
 // --- TFT Display Pin Definitions ---
 

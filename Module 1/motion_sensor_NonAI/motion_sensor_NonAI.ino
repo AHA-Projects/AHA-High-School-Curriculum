@@ -7,12 +7,16 @@
 
 
 
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
-#include <Wire.h>
-#include <Adafruit_ST7789.h>   // Library for the ST7789 TFT screen
-#include <SPI.h>             // SPI library needed for ST7789 TFT
+// --- Default Installed Libraries - No Installation Required ---
+#include <Wire.h> // Required for communication 
+#include <SPI.h> // Required for SPI communication for the screen 
+  
+  
+// ---  Sensor Specific Libraries - Installation Required from IDE library manager --- 
+#include <Adafruit_MPU6050.h> // Need for the MPU6050 motion Sensor
+#include <Adafruit_ST7789.h>   //  Library for our ST7789 TFT screen
 
+  
 
 #define TFT_CS    33  // TFT Chip Select pin
 #define TFT_DC    25  // TFT Data/Command pin

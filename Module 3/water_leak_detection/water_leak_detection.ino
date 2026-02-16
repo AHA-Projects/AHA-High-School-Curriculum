@@ -1,7 +1,3 @@
-#include <Water_Leak_Detection_inferencing.h>
-
-
-
 // Acknowledgments
 
 // Creator: Anany Sharma at the University of Florida working under NSF grant. 2405373
@@ -14,20 +10,21 @@
 // This program is designed to detect water leaks by detecting red color strips, using a machine learning model.
 // It uses a light sensor to analyze the color of a surface and an OLED screen to display if a leak is detected.
 
-// Importing the Edge Impulse library, which contains the pre-trained model for water leak detection.
-
-// Importing the library for the APDS9960 sensor, a versatile sensor that can detect ambient light and color.
-#include "Adafruit_APDS9960.h"
+// Edge Impulse Library : Need to import this as a ZIP after downloading from Edge Impulse/Github
+#include <Water_Leak_Detection_inferencing.h>
 
 
-// These libraries are necessary to control the Adafruit ST7789 display, a type of OLED screen.
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7789.h> 
+//Default Installed Libraries - No Installation Required
+#include <Wire.h> // - Required for communication 
+#include <SPI.h> // - Required for SPI communication for the screen
 
-// This library is for I2C communication, a standard way for microcontrollers to talk to other devices.
-#include <Wire.h>                             
-// This is the Wi-Fi library, which is included but not used in this particular program.
-#include <WiFi.h>     
+
+//Sensor Specific Libraries - Installation Required from IDE library manager
+#include "Adafruit_APDS9960.h" // - The specific library for our light sensor
+#include <Adafruit_GFX.h> // - Core graphics library for shapes and text
+#include <Adafruit_ST7789.h> // -  Library for our ST7789 TFT screen
+
+  
 
 // We are setting up how often the sensor will take a reading.
 #define FREQUENCY_HZ 43                          // Sampling rate: 43 times per second

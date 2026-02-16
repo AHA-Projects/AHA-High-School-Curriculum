@@ -8,16 +8,20 @@
 // Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation.
 
 
+// Edge Impulse Library : Need to import this as a ZIP after downloading from Edge Impulse/Github
+#include <Proximity_Motion_Detection_inferencing.h>                
 
-#include <Proximity_Motion_Detection_inferencing.h>                //Edge impulse trained model library
-// #include <GyverOLED.h>
+// Default Installed Libraries - No Installation Required
+#include <Wire.h> // - Required for communication 
+#include <SPI.h> // - Required for SPI communication for the screen 
+  
+// Sensor Specific Libraries - Installation Required from IDE library manager
+#include <VL53L0X.h> // -  Need for the VL53L0X Time of Flight Sensor
+#include <Adafruit_ST7789.h> //  -  Library for our ST7789 TFT screen
+#include <Adafruit_GFX.h> // - Core graphics library helps draw shapes and text
 
 
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789 display
 
-#include <Wire.h>
-#include <VL53L0X.h>
 
 VL53L0X sensor;  //Initializing the sensor object for its appropriate usage
 

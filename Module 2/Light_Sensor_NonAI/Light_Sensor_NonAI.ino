@@ -12,13 +12,21 @@
 // Importing Wire.h, it helps in communicating with I2C devices
 // What is I2C?
 // I@C is a communication protocol that allows a microcontroller to communicate with multiple peripherals, such as sensors or displays.
+// Default Installed Libraries - No Separate Installation Required 
 #include <Wire.h>
 
-// Importing Sensor Libraries - Light Sensor
+
+
+// --- Libraries for the Light Sensor :  Needs to be installed from Arduino Library Manager if not already installed
 #include "Adafruit_APDS9960.h"
-// --- Libraries for the TFT Display ---
+// --- Libraries for the TFT Display : Needs to be installed from Arduino Library Manager if not already installed ---
 #include <Adafruit_GFX.h>     // Core graphics library - helps draw shapes and text
 #include <Adafruit_ST7789.h>  // Library for our ST7789 TFT screen
+
+
+
+
+
 // These lines tell the Arduino which pins are connected to the screen.
 // IMPORTANT: These pin numbers might be different for your specific Arduino board or wiring.
 // These are common for ESP32 boards.

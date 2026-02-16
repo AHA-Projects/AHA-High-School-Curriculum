@@ -5,16 +5,19 @@
 // This material is based upon work supported by the National Science Foundation under Grant No. 2405373. 
 // Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation.
 
-
-
-// --- Original Libraries for BME280 Sensor ---
+// Default Installed Libraries (No Need to install separately)
 #include <Wire.h>             // Needed for I2C communication (how the sensor talks to Arduino)
 #include <SPI.h>              // Needed if you were using SPI communication (another way to talk)
+
+
+// --- Original Libraries for BME280 Sensor  : Need installation if not already installed---
 #include <Adafruit_BME280.h>  // The specific library for our BME280 sensor
 
-// --- Libraries for the TFT Display ---
+// --- Libraries for the TFT Display : Need installation if not already installed----
 #include <Adafruit_GFX.h>     // Core graphics library - helps draw shapes and text
 #include <Adafruit_ST7789.h>  // Library for our ST7789 TFT screen
+
+
 
 // --- Screen Pin Definitions (for ST7789 TFT Display) ---
 // These lines tell the Arduino which pins are connected to the screen.

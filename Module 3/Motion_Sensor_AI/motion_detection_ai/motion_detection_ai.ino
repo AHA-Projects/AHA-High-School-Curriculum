@@ -6,15 +6,19 @@
 // Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation.
 
 
-#include <Lab_7_motion_detection_v1_inferencing.h>
-#include <Adafruit_MPU6050.h>                 // Library to interact with the MPU6050 motion sensor
-#include <Adafruit_Sensor.h>                  // Unified sensor interface used by Adafruit libraries
-#include <Wire.h>                             // Library for I2C communication
-#include <WiFi.h>                             // WiFi library for network capability (not used in this code)
-// #include <GyverOLED.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7789.h> 
 
+// Edge Impulse Library : Need to import this as a ZIP after downloading from Edge Impulse/Github
+#include <Lab_7_motion_detection_v1_inferencing.h>
+
+// Default Installed Libraries - No Installation Required
+#include <Wire.h> // - Required for communication 
+#include <SPI.h> // - Required for SPI communication for the screen 
+  
+// Sensor Specific Libraries - Installation Required from IDE library manager
+#include <Adafruit_MPU6050.h> // - Need for the MPU6050 motion Sensor
+#include <Adafruit_ST7789.h> //  -  Library for our ST7789 TFT screen
+
+     
 
 // === Define Sampling Parameters ===
 #define FREQUENCY_HZ 60                          // Sampling rate: 60 times per second
