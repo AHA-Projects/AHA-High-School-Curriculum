@@ -17,13 +17,10 @@
 
 
 
-// --- Libraries for the Light Sensor :  Needs to be installed from Arduino Library Manager if not already installed
-#include "Adafruit_APDS9960.h"
-// --- Libraries for the TFT Display : Needs to be installed from Arduino Library Manager if not already installed ---
-#include <Adafruit_GFX.h>     // Core graphics library - helps draw shapes and text
-#include <Adafruit_ST7789.h>  // Library for our ST7789 TFT screen
-
-
+// Sensor Specific Libraries - Installation Required from IDE library manager
+#include "Adafruit_APDS9960.h" // - The specific library for our light sensor
+#include <Adafruit_GFX.h> // - Core graphics library for shapes and text
+#include <Adafruit_ST7789.h>  // -  Library for our ST7789 TFT screen
 
 
 

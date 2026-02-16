@@ -9,11 +9,10 @@
 
 // These are the 'brains' (libraries) we need for our sensor and the screen.
 
-
-#include "Adafruit_APDS9960.h" // The library for our gesture sensor
-#include <Adafruit_GFX.h>      // Core graphics library - helps draw shapes and text
-#include <Adafruit_ST7789.h>   // Library for the ST7789 TFT screen
-
+// Sensor Specific Libraries - Installation Required from IDE library manager
+#include "Adafruit_APDS9960.h" // - The specific library for our light sensor
+#include <Adafruit_GFX.h> // - Core graphics library for shapes and text
+#include <Adafruit_ST7789.h>  // -  Library for our ST7789 TFT screen
 
 
 
