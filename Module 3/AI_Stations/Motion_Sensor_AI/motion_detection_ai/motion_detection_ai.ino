@@ -24,6 +24,15 @@
 #define FREQUENCY_HZ 60                          // Sampling rate: 60 times per second
 #define INTERVAL_MS (1000 / (FREQUENCY_HZ + 1))  // Time between samples in milliseconds
 
+#define BLACK   0x0000
+#define WHITE   0xFFFF
+#define GREEN   0x07E0
+#define RED     0xF800
+#define BLUE    0x001F
+#define YELLOW  0xFFE0
+#define CYAN    0x07FF
+#define ORANGE  0xFD20
+
 
 // === Initialize Sensor and Buffer Variables ===
 Adafruit_MPU6050 mpu;          
@@ -52,12 +61,27 @@ void setup() {
   display.init(170, 320);
   display.setRotation(3);
   // Try to initialize the MPU6050 sensor
-  if (!mpu.begin()) {
-    Serial.println("Failed to find MPU6050 chip");  // Error message if sensor not found
-    while (1) {
-      delay(10);  // Halt the program in an infinite loop
-    }
+if (!mpu.begin()) {
+  // Check if it's actually an MPU6500 (returns 0x70 instead of 0x68)
+  Wire.beginTransmission(MPU6050_I2CADDR_DEFAULT);
+  Wire.write(MPU6050_WHO_AM_I);
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU6050_I2CADDR_DEFAULT, 1);
+  uint8_t whoami = Wire.read();
+
+  if (whoami == 0x70) {
+    // MPU6500 confirmed — functionally identical, proceed normally
+    Serial.println("MPU6500 detected (WHO_AM_I=0x70), continuing...");
+  } else {
+    Serial.print("Failed to find MPU6050/6500, WHO_AM_I=0x");
+    Serial.println(whoami, HEX);
+    display.setTextSize(2);
+    display.setTextColor(RED);
+    display.setCursor(5, 5);
+    display.println("MPU6050 Init Failed!");
+    while (1) delay(10); // Halt only on true failure
   }
+}
   Serial.println("MPU6050 Found!");  // Success message
 
   // Set accelerometer sensitivity to ±8G
