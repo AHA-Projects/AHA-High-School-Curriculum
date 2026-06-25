@@ -31,7 +31,7 @@ Adafruit_MPU6050 mpu;
 
 // --- Motion Thresholds ---
 const float STILL_THRESHOLD_LOW  = 8.0;
-const float STILL_THRESHOLD_HIGH = 11.0;
+const float STILL_THRESHOLD_HIGH = 13.0;
 
 // --- Debounce Counts ---
 const int DEBOUNCE_COUNT_MOVING = 5;
