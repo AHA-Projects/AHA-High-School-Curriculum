@@ -1,28 +1,23 @@
 // Acknowledgments
-
 // Creator: Anany Sharma at the University of Florida working under NSF grant. 2405373
+// This material is based upon work supported by the National Science Foundation under Grant No. 2405373.
+// Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors
+// and do not necessarily reflect the views of the National Science Foundation.
 
-// This material is based upon work supported by the National Science Foundation under Grant No. 2405373. 
-// Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation.
+// --- Default Installed Libraries ---
+#include <Wire.h>
+#include <SPI.h>
 
+// --- Sensor Specific Libraries ---
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_ST7789.h>
 
+// --- Pin Definitions ---
+#define TFT_CS    33
+#define TFT_DC    25
+#define TFT_RST   26
 
-// --- Default Installed Libraries - No Installation Required ---
-#include <Wire.h> // Required for communication 
-#include <SPI.h> // Required for SPI communication for the screen 
-  
-  
-// ---  Sensor Specific Libraries - Installation Required from IDE library manager --- 
-#include <Adafruit_MPU6050.h> // Need for the MPU6050 motion Sensor
-#include <Adafruit_ST7789.h>   //  Library for our ST7789 TFT screen
-
-  
-
-#define TFT_CS    33  // TFT Chip Select pin
-#define TFT_DC    25  // TFT Data/Command pin
-#define TFT_RST   26  // TFT Reset pin
-
-// --- Color Definitions 
+// --- Color Definitions ---
 #define BLACK   0x0000
 #define WHITE   0xFFFF
 #define GREEN   0x07E0
@@ -30,129 +25,178 @@
 #define BLUE    0x001F
 #define YELLOW  0xFFE0
 
-Adafruit_ST7789 tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
+// --- Objects ---
+Adafruit_ST7789  tft = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
 Adafruit_MPU6050 mpu;
 
-// Define a threshold for motion detection based on acceleration magnitude
-const float STILL_THRESHOLD_LOW = 8.0;
-const float STILL_THRESHOLD_HIGH = 9.0;
+// --- Motion Thresholds ---
+const float STILL_THRESHOLD_LOW  = 8.0;
+const float STILL_THRESHOLD_HIGH = 11.0;
 
-const int DEBOUNCE_COUNT_MOVING = 5; // How many consecutive 'moving' readings to confirm motion
-const int DEBOUNCE_COUNT_STILL = 10; // How many consecutive 'still' readings to confirm stillness
+// --- Debounce Counts ---
+const int DEBOUNCE_COUNT_MOVING = 5;
+const int DEBOUNCE_COUNT_STILL  = 10;
 
-int movingCounter = 0;
-int stillCounter = 0;
+// --- Globals ---
+int  movingCounter = 0;
+int  stillCounter  = 0;
+bool wasMoving     = false; // Global so setup() can seed it correctly
 
-void setup(void) {
+// =====================
+// Helper: draw moving screen
+// =====================
+void drawMoving() {
+  tft.fillScreen(BLACK);
+  tft.setTextSize(4);
+  tft.setTextColor(RED);
+  tft.setCursor(5, 20);
+  tft.println("Weeee!");
+  tft.setCursor(5, 60);
+  tft.print("On the Go!");
+}
+
+// =====================
+// Helper: draw still screen
+// =====================
+void drawStill() {
+  tft.fillScreen(BLACK);
+  tft.setTextSize(4);
+  tft.setTextColor(GREEN);
+  tft.setCursor(5, 20);
+  tft.println("Shake me");
+  tft.setCursor(5, 60);
+  tft.print("to see magic!");
+}
+
+// =====================
+// Helper: read acceleration magnitude
+// =====================
+float readAccelMagnitude() {
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+  return sqrt(
+    (a.acceleration.x * a.acceleration.x) +
+    (a.acceleration.y * a.acceleration.y) +
+    (a.acceleration.z * a.acceleration.z)
+  );
+}
+
+// =====================
+// setup()
+// =====================
+void setup() {
   Serial.begin(115200);
-  while (!Serial) delay(10); 
+  while (!Serial) delay(10);
 
-  // Initialize TFT
-  tft.init(170, 320);     // Tell the screen to get ready, specifying its pixel width and height.
+  // --- TFT Init ---
+  tft.init(170, 320);
+  tft.setRotation(3);
+  tft.fillScreen(BLACK);
   Serial.println("TFT initialized");
-  tft.setRotation(3);     // Rotate the screen (e.g., to landscape).
-  tft.fillScreen(BLACK);  // Make the whole screen black to start with.
   delay(500);
 
-  Serial.println("Adafruit MPU6050 test!");
+  // --- MPU Init with MPU6500 fallback ---
+  Serial.println("Initializing MPU6050...");
 
-  // Try to initialize MPU6050!
   if (!mpu.begin()) {
-    Serial.println("Failed to find MPU6050 chip");
-    tft.setTextSize(2);             
-    tft.setTextColor(RED);        
-    tft.setCursor(5, 5);            
-    tft.println("MPU6050 Init Failed!"); 
-    while (1) { // Halt if MPU fails to initialize
-      delay(10);
+    // Standard init failed — check if it's an MPU6500 (WHO_AM_I = 0x70)
+    Wire.beginTransmission(MPU6050_I2CADDR_DEFAULT);
+    Wire.write(MPU6050_WHO_AM_I);
+    Wire.endTransmission(false);
+    Wire.requestFrom(MPU6050_I2CADDR_DEFAULT, 1);
+    uint8_t whoami = Wire.read();
+
+    if (whoami == 0x70) {
+      // MPU6500 confirmed — register-compatible, safe to proceed
+      Serial.println("MPU6500 detected (WHO_AM_I=0x70), continuing...");
+    } else {
+      // Truly unrecognized — halt
+      Serial.print("MPU init failed. Unknown WHO_AM_I: 0x");
+      Serial.println(whoami, HEX);
+      tft.setTextSize(2);
+      tft.setTextColor(RED);
+      tft.setCursor(5, 5);
+      tft.println("MPU Init Failed!");
+      while (1) delay(10);
     }
   }
-  Serial.println("MPU6050 Found!");
-  tft.fillScreen(BLACK);          // Clear screen
-  tft.setTextSize(2);             
-  tft.setTextColor(GREEN);        
-  tft.setCursor(5, 5);            
-  tft.println("MPU6050 Found!"); 
+
+  Serial.println("MPU Found!");
+  tft.fillScreen(BLACK);
+  tft.setTextSize(2);
+  tft.setTextColor(GREEN);
+  tft.setCursor(5, 5);
+  tft.println("MPU Found!");
   delay(1000);
 
-  Serial.println("MPU6050 initialized for magnitude detection.");
-  tft.fillScreen(BLACK);          // Clear screen
-  tft.setTextSize(2);             
-  tft.setTextColor(WHITE);        
-  tft.setCursor(5, 5);            
+  tft.fillScreen(BLACK);
+  tft.setTextSize(2);
+  tft.setTextColor(WHITE);
+  tft.setCursor(5, 5);
   tft.println("Ready for motion!");
   delay(1000);
 
-  // Initial display when still
-  tft.fillScreen(BLACK); 
-  tft.setTextSize(4);    
-  tft.setTextColor(GREEN); 
-  tft.setCursor(5, 20);   
-  tft.println("Shake me");
-  tft.setCursor(5, 60);
-  tft.print("to see magic!");  
-  Serial.println("\n--- Still ---");   // Print "Still"
-  Serial.println("Initial state: Still"); // Print initial state to Serial
+  // --- Seed wasMoving from actual sensor state at boot ---
+  float initialMag = readAccelMagnitude();
+  wasMoving = (initialMag < STILL_THRESHOLD_LOW || initialMag > STILL_THRESHOLD_HIGH);
+
+  if (wasMoving) {
+    drawMoving();
+    Serial.println("Initial state: Moving");
+  } else {
+    drawStill();
+    Serial.println("Initial state: Still");
+  }
 }
 
+// =====================
+// loop()
+// =====================
 void loop() {
   sensors_event_t a, g, temp;
-  mpu.getEvent(&a, &g, &temp); // Get accelerometer and gyroscope data
+  mpu.getEvent(&a, &g, &temp);
 
-  // Calculate the vector magnitude of acceleration
+  // Calculate acceleration magnitude
   float accelMagnitude = sqrt(
     (a.acceleration.x * a.acceleration.x) +
     (a.acceleration.y * a.acceleration.y) +
     (a.acceleration.z * a.acceleration.z)
   );
 
-  // Determine if raw reading indicates moving or still based on the magnitude
+  // Raw motion detection
   bool rawMotionDetected = (accelMagnitude < STILL_THRESHOLD_LOW || accelMagnitude > STILL_THRESHOLD_HIGH);
 
-  // Debouncing logic
+  // Debounce counters
   if (rawMotionDetected) {
     movingCounter++;
-    stillCounter = 0; // Reset still counter while the sensor is moving
+    stillCounter = 0;
   } else {
     stillCounter++;
-    movingCounter = 0; // Reset moving counter while sensor is still
+    movingCounter = 0;
   }
 
-  static bool wasMoving = false; // Tracks the previous debounced state
-  bool currentStateMoving;       // Current determined debounced state
-
+  // Determine debounced state
+  bool currentStateMoving;
   if (movingCounter >= DEBOUNCE_COUNT_MOVING) {
     currentStateMoving = true;
   } else if (stillCounter >= DEBOUNCE_COUNT_STILL) {
     currentStateMoving = false;
   } else {
-    // If neither threshold is met, maintain the previous debounced state
-    currentStateMoving = wasMoving;
+    currentStateMoving = wasMoving; // Hold previous state until threshold met
   }
 
-  // Update LED
-  if (currentStateMoving && !wasMoving) { // Transition from Still to Moving
-    tft.fillScreen(BLACK); 
-    tft.setTextSize(4);    
-    tft.setTextColor(RED); 
-    tft.setCursor(5, 20);   
-    tft.println("Weeee!");
-    tft.setCursor(5, 60);
-    tft.print("On the Go!");   
+  // Handle state transitions
+  if (currentStateMoving && !wasMoving) {
+    drawMoving();
+    Serial.println("\n--- Moving ---");
     wasMoving = true;
-  } else if (!currentStateMoving && wasMoving) { // Transition from Moving to Still
-    tft.fillScreen(BLACK); 
-    tft.setTextSize(4);    
-    tft.setTextColor(GREEN); 
-    tft.setCursor(5, 20);   
-    tft.println("Shake me");
-    tft.setCursor(5, 60);
-    tft.print("to see magic!");  
+  } else if (!currentStateMoving && wasMoving) {
+    drawStill();
     Serial.println("\n--- Still ---");
     wasMoving = false;
   }
 
-  // Print sensor data to Serial Monitor only if currently in the 'Moving' state
+  // Print sensor data to Serial only while moving
   if (currentStateMoving) {
     Serial.print("AccelX:"); Serial.print(a.acceleration.x, 2);
     Serial.print(", AccelY:"); Serial.print(a.acceleration.y, 2);
@@ -160,9 +204,9 @@ void loop() {
     Serial.print(" | Magnitude:"); Serial.print(accelMagnitude, 2);
     Serial.print(" | GyroX:"); Serial.print(g.gyro.x, 2);
     Serial.print(", GyroY:"); Serial.print(g.gyro.y, 2);
-    Serial.print(", GyroZ:"); Serial.print(g.gyro.z, 2);
-    Serial.println("");
+    Serial.print(", GyroZ:"); Serial.println(g.gyro.z, 2);
   }
 
-  delay(20); // Small delay to allow more frequent sampling for debounce
+  delay(20);
 }
+

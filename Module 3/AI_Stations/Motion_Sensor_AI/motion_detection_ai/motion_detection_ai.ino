@@ -60,7 +60,7 @@ void setup() {
 
   display.init(170, 320);
   display.setRotation(3);
-  // Try to initialize the MPU6050 sensor
+  // Initializing the sensor and fallback remediation in case of failure due to invalid address issues.
 if (!mpu.begin()) {
   // Check if it's actually an MPU6500 (returns 0x70 instead of 0x68)
   Wire.beginTransmission(MPU6050_I2CADDR_DEFAULT);
@@ -70,7 +70,6 @@ if (!mpu.begin()) {
   uint8_t whoami = Wire.read();
 
   if (whoami == 0x70) {
-    // MPU6500 confirmed — functionally identical, proceed normally
     Serial.println("MPU6500 detected (WHO_AM_I=0x70), continuing...");
   } else {
     Serial.print("Failed to find MPU6050/6500, WHO_AM_I=0x");
