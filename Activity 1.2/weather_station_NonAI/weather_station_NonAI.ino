@@ -137,7 +137,7 @@ void loop() {
     tft.setCursor(130, 25);               // Set cursor position for the value (right of "TEMP:")
     tft.print(temperature, 1);            // Print temperature with 1 decimal place
     tft.write(247);                       // This prints the degree symbol: °
-    tft.print(F("C"));                    // Print "C" for Celsius
+    tft.print(F("F"));                    // Print "C" for Celsius
 
     // --- Display Humidity on TFT ---
     // Define area to clear for the humidity value
